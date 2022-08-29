@@ -1,13 +1,12 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { CreateMessageDto } from './dto/create-message.dto';
-import { UpdateMessageDto } from './dto/update-message.dto';
 import { Message } from './entities/message.entity';
 
 @Injectable()
 export class MessagesService {
   messages: Message[] = [{ name: 'usman', text: 'hello there!' }];
-  clientToUser = {}
+  clientToUser = {};
 
   async join(name: string, clientId: string) {
     this.clientToUser[clientId] = name;
@@ -19,9 +18,12 @@ export class MessagesService {
     return this.clientToUser[clientId];
   }
 
-  async create(createMessageDto: CreateMessageDto) {
-    const message = { ...createMessageDto }
-    await this.messages.push(message);
+  async create(createMessageDto: CreateMessageDto, clientId: string) {
+    const message = {
+      name: this.clientToUser[clientId],
+      text: createMessageDto.text,
+    };
+    this.messages.push(message);
     return message;
   }
 
